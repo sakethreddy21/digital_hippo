@@ -5,7 +5,7 @@ import type  {InitOptions} from 'payload/config'
 
 dotenv.config(
 {
-  path:path.resolve(__dirname,'../../.env')
+  path:path.resolve(__dirname,'../.env')
 }
 )
 let cached =(global as any).payload;
@@ -32,7 +32,12 @@ export const getPayloadClient= async ({initOptions,}:Args={}) => {
       local:initOptions?.express? false:true,
       ...(initOptions || {})
      });
-    
-  } 
-
+     } 
+     try{
+       cached.client=await cached.promise;
+      }catch(e:unknown){
+        cached.promise=null;
+        throw e;
+      }   
+      return cached.client; 
 }
